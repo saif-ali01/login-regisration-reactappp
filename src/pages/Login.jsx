@@ -4,10 +4,9 @@ import { FaGooglePlusG } from "react-icons/fa";
 import { FaLinkedinIn } from "react-icons/fa";
 import { FaGithub } from "react-icons/fa";
 import { api } from "../api";
+import { useNavigate } from "react-router";
 
 const Login = () => {
-
-
     const [signinBgColor, setSigninBgColor] = useState(false);
     const [swap, setSwap] = useState(false);
     const [rotation, setRotation] = useState(false);
@@ -103,28 +102,26 @@ export const IconList = () => {
     )
 }
 export const Signin = () => {
-    
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-
-
-
+    const navigate = useNavigate();
     const handleSignin = async (e) => {
         e.preventDefault();
-    
+        let response;
         try {
-            const response = await axios.post(`${api}/auth/login`, { email, password });
-    
+            response = await axios.post(`${api}/auth/login`, { email, password });
+
             if (response.status === 200) {
-                console.log('Login successful:', response.data);
-                // Save the token or user data, then redirect
-                // For example, localStorage.setItem('user', JSON.stringify(response.data));
-                // redirect('/dashboard');
+                localStorage.setItem("user", JSON.stringify(response.data));
+                console.log("Saved user to localStorage:", JSON.parse(localStorage.getItem("user")));
+                navigate("/home")
             }
+           
         } catch (error) {
             if (error.response) {
                 const { status, data } = error.response;
-    
+
                 switch (status) {
                     case 400:
                         alert(data || 'Bad request. Please check your input.');
@@ -132,9 +129,9 @@ export const Signin = () => {
                     case 401:
                         alert(data || 'Incorrect password! Please enter the correct password.');
                         break;
-                    case 403:
-                        alert(data || 'Please verify your email');
-                        break;
+                    case 403:{
+                        navigate("/verification", { state: { email } })
+                        break;}
                     case 404:
                         alert(data || 'Email is not registered');
                         break;
@@ -152,7 +149,7 @@ export const Signin = () => {
         }
     };
 
-    
+
 
     return (
         <div className="flex justify-center items-center flex-col w-full  ">
@@ -163,14 +160,14 @@ export const Signin = () => {
                     type="email"
                     placeholder="Email"
                     className="w-[80%] p-3 bg-transparent  border-b border-gray-400 focus:rounded-lg focus:outline-none  focus:ring-gray-400 focus:ring-2 text-white focus:border-none  placeholder:text-xl"
-                    onChange={(e)=>{
+                    onChange={(e) => {
                         setEmail(e.target.value);
                     }}
                 />
                 <input
                     type="password"
                     placeholder="Password"
-                    onChange={(e)=>{
+                    onChange={(e) => {
                         setPassword(e.target.value);
                     }}
                     className="w-[80%] p-3 bg-transparent  border-b border-gray-400 focus:rounded-lg focus:outline-none  focus:ring-2 focus:ring-gray-400 focus:border-none text-white  placeholder:text-xl mt-5"
@@ -181,25 +178,63 @@ export const Signin = () => {
             </a>
             <button type="submit"
                 className="transition-transform duration-700 ease-in-out  hover:scale-110 uppercase hover:bg-[#9f64e2] py-2 px-10 rounded-full  hover:text-black font-semibold text-xs tracking-widest
-                text-gray-300 border-2 border-[#9f64e2] mt-5 " onClick={handleSignin}>Sign in </button>
+                text-gray-300 border-2 border-[#9f64e2] mt-5 " onClick={handleSignin}>
+                Sign in
+            </button>
         </div>
     );
 };
 
 export const Signup = () => {
-    const [name,setName] =useState("");
+    const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const navigate = useNavigate();
 
-    const handleSignUp=async (e)=>{
+    const handleSignUp = async (e) => {
         e.preventDefault();
+        const user = {
+            name: name,
+            email: email,
+            password: password
+        };
         try {
-            const response = await axios.post(`${api}/auth/register`, { name, email, password });
-            console.log('Signin successful:', response.data);
+            const response = await axios.post(`${api}/auth/register`, user);
+            if (response.status === 201) {
+                localStorage.setItem("user", JSON.stringify(response.data));
+                console.log("Saved user to localStorage:", JSON.parse(localStorage.getItem("user")));
+                navigate("/verification");
+            }
         } catch (error) {
-            console.error('Error signing up:', error);
+            if (error.response) {
+                const { status, data } = error.response;
+
+                switch (status) {
+                    case 400:
+                        alert(data || 'Bad request. Please check your input.');
+                        break;
+                    case 403:
+                        alert(data || 'Please verify your email');
+                        navigate("/verification");
+                        break;
+                    case 409:
+                        alert(data || "User is already present with this email.");
+                        break;
+                    case 500:
+                        alert(data || 'Server error. Please try again later.');
+                        break;
+                    default:
+                        alert('An unexpected error occurred.');
+                }
+                console.log(data)
+            } else {
+                console.error('Error:', error);
+                alert('Network error. Please check your connection.');
+            }
         }
-    }
+    };
+
+
     return (
         <div className="flex justify-center items-center flex-col w-full  ">
             <h1 className='text-white text-3xl font-bold font-serif' style={{ fontFamily: "Montserrat" }}>Create Account</h1>
@@ -210,7 +245,7 @@ export const Signup = () => {
                     placeholder="Name"
 
                     className="w-[80%] p-2 bg-transparent  border-b border-gray-400 focus:rounded-lg focus:outline-none  focus:ring-2 focus:ring-gray-400 focus:border-none text-white  placeholder:text-xl mt-5"
-                    onChange={(e)=>{
+                    onChange={(e) => {
                         setName(e.target.value);
                     }}
                 />
@@ -218,7 +253,7 @@ export const Signup = () => {
                     type="email"
                     placeholder="Email"
                     className="w-[80%] p-2 bg-transparent  border-b border-gray-400 focus:rounded-lg focus:outline-none  focus:ring-gray-400 focus:ring-2 text-white focus:border-none  placeholder:text-xl mt-2"
-                    onChange={(e)=>{
+                    onChange={(e) => {
                         setEmail(e.target.value);
                     }}
                 />
@@ -226,7 +261,7 @@ export const Signup = () => {
                     type="password"
                     placeholder="Password"
                     className="w-[80%] p-2 bg-transparent  border-b border-gray-400 focus:rounded-lg focus:outline-none  focus:ring-2 focus:ring-gray-400 focus:border-none text-white  placeholder:text-xl mt-2"
-                    onChange={(e)=>{
+                    onChange={(e) => {
                         setPassword(e.target.value);
                     }}
                 />
