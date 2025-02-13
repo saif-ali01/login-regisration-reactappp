@@ -1,10 +1,9 @@
-import axios from "axios";
+
 import { useState } from "react";
-import { FaGooglePlusG } from "react-icons/fa";
-import { FaLinkedinIn } from "react-icons/fa";
-import { FaGithub } from "react-icons/fa";
-import { api } from "../api";
-import { useNavigate } from "react-router";
+
+
+import Signup from "../components/Signup";
+import Signin from "../components/Signin";
 
 const Login = () => {
     const [signinBgColor, setSigninBgColor] = useState(false);
@@ -32,7 +31,7 @@ const Login = () => {
                             <Signup />
                             <div className=" flex sm:hidden tracking-widest font-semibold text-gray text-xs mt-5">
                                 <h6 href="#forget" className="font-serif mt-5 text-sm tracking-wide text-gray-400 " style={{ fontFamily: "Montserrat" }}>
-                                    if you already an account ? <a onClick={checkRotaion}>signin</a>
+                                    if you already an account ? <a className="text-[#9f64e2]"onClick={checkRotaion}>signin</a>
                                 </h6>
                             </div>
                         </div>
@@ -44,7 +43,7 @@ const Login = () => {
                                 <h6 href="#forget" className="font-serif mt-5 text-sm tracking-wide text-gray-400" style={{ fontFamily: "Montserrat" }}>{
                                     "if you  don't an have account ?"}
 
-                                    <a onClick={checkRotaion}>signup</a>
+                                    <a className="text-[#9f64e2]" onClick={checkRotaion}>signup</a>
                                 </h6>
                             </div>
                         </div>
@@ -66,7 +65,7 @@ const Login = () => {
                     <button
                         onClick={toggleSwap}
                         className="uppercase  transition-transform duration-700 ease-in-out  hover:scale-110 hover:bg-[#9f64e2] py-2 px-10 rounded-full tracking-widest hover:text-black font-semibold
-            text-white border-2 border-[#9f64e2] mt-10 text-xs "
+            text-white border-2 border-[#9f64e2] mt-10 text-xs  "
                     >
                         {
                             rotation ? "Sign in" : "Sign up"
@@ -79,201 +78,7 @@ const Login = () => {
 };
 
 export default Login;
-export const IconList = () => {
-    return (
-        <ul className="list-none flex mt-5">
 
-            <li className="p-2 rounded-full flex text-gray-200 hover:text-white m-2 justify-center items-center border-[1px] shadow-sm shadow-gray-400 ">
-                <a href="#">
-                    <FaGooglePlusG className="transition-transform duration-700 ease-in-out  hover:scale-150" size={20} />
-                </a>
-            </li>
-            <li className="p-2 rounded-full flex text-gray-200 hover:text-white m-2 justify-center items-center border-[1px] shadow-sm shadow-gray-400 ">
-                <a href="https://www.linkedin.com/in/saif-ali-285581243/">
-                    <FaLinkedinIn className="transition-transform duration-700 ease-in-out  hover:scale-150" size={20} />
-                </a>
-            </li>
-            <li className="p-2 rounded-full flex text-gray-200 hover:text-white m-2 justify-center items-center border-[1px] shadow-sm shadow-gray-400 ">
-                <a href="https://github.com/saif-ali01">
-                    <FaGithub className="transition-transform duration-700 ease-in-out  hover:scale-150" size={20} />
-                </a>
-            </li>
-        </ul>
-    )
-}
-export const Signin = () => {
-
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const navigate = useNavigate();
-    const handleSignin = async (e) => {
-        e.preventDefault();
-        let response;
-        try {
-            response = await axios.post(`${api}/auth/login`, { email, password });
-
-            if (response.status === 200) {
-                localStorage.setItem("user", JSON.stringify(response.data));
-                console.log("Saved user to localStorage:", JSON.parse(localStorage.getItem("user")));
-                navigate("/home")
-            }
-           
-        } catch (error) {
-            if (error.response) {
-                const { status, data } = error.response;
-
-                switch (status) {
-                    case 400:
-                        alert(data || 'Bad request. Please check your input.');
-                        break;
-                    case 401:
-                        alert(data || 'Incorrect password! Please enter the correct password.');
-                        break;
-                    case 403:{
-                        navigate("/verification", { state: { email } })
-                        break;}
-                    case 404:
-                        alert(data || 'Email is not registered');
-                        break;
-                    case 500:
-                        alert(data || 'Server error. Please try again later.');
-                        break;
-                    default:
-                        alert('An unexpected error occurred.');
-                }
-                console.log(data)
-            } else {
-                console.error('Error:', error);
-                alert('Network error. Please check your connection.');
-            }
-        }
-    };
-
-
-
-    return (
-        <div className="flex justify-center items-center flex-col w-full  ">
-            <h1 className='text-white text-4xl font-bold font-serif' style={{ fontFamily: "Montserrat" }}>Sign in</h1>
-            <IconList />
-            <div className="mt-6 w-full max-w-xs flex justify-center items-center flex-col">
-                <input
-                    type="email"
-                    placeholder="Email"
-                    className="w-[80%] p-3 bg-transparent  border-b border-gray-400 focus:rounded-lg focus:outline-none  focus:ring-gray-400 focus:ring-2 text-white focus:border-none  placeholder:text-xl"
-                    onChange={(e) => {
-                        setEmail(e.target.value);
-                    }}
-                />
-                <input
-                    type="password"
-                    placeholder="Password"
-                    onChange={(e) => {
-                        setPassword(e.target.value);
-                    }}
-                    className="w-[80%] p-3 bg-transparent  border-b border-gray-400 focus:rounded-lg focus:outline-none  focus:ring-2 focus:ring-gray-400 focus:border-none text-white  placeholder:text-xl mt-5"
-                />
-            </div>
-            <a href="#forget" className="font-serif mt-10 text-sm tracking-wider uppercase text-gray-300" style={{ fontFamily: "Montserrat" }}>
-                Forget your password ?
-            </a>
-            <button type="submit"
-                className="transition-transform duration-700 ease-in-out  hover:scale-110 uppercase hover:bg-[#9f64e2] py-2 px-10 rounded-full  hover:text-black font-semibold text-xs tracking-widest
-                text-gray-300 border-2 border-[#9f64e2] mt-5 " onClick={handleSignin}>
-                Sign in
-            </button>
-        </div>
-    );
-};
-
-export const Signup = () => {
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const navigate = useNavigate();
-
-    const handleSignUp = async (e) => {
-        e.preventDefault();
-        const user = {
-            name: name,
-            email: email,
-            password: password
-        };
-        try {
-            const response = await axios.post(`${api}/auth/register`, user);
-            if (response.status === 201) {
-                localStorage.setItem("user", JSON.stringify(response.data));
-                console.log("Saved user to localStorage:", JSON.parse(localStorage.getItem("user")));
-                navigate("/verification");
-            }
-        } catch (error) {
-            if (error.response) {
-                const { status, data } = error.response;
-
-                switch (status) {
-                    case 400:
-                        alert(data || 'Bad request. Please check your input.');
-                        break;
-                    case 403:
-                        alert(data || 'Please verify your email');
-                        navigate("/verification");
-                        break;
-                    case 409:
-                        alert(data || "User is already present with this email.");
-                        break;
-                    case 500:
-                        alert(data || 'Server error. Please try again later.');
-                        break;
-                    default:
-                        alert('An unexpected error occurred.');
-                }
-                console.log(data)
-            } else {
-                console.error('Error:', error);
-                alert('Network error. Please check your connection.');
-            }
-        }
-    };
-
-
-    return (
-        <div className="flex justify-center items-center flex-col w-full  ">
-            <h1 className='text-white text-3xl font-bold font-serif' style={{ fontFamily: "Montserrat" }}>Create Account</h1>
-            <IconList />
-            <div className=" w-full max-w-xs flex justify-center items-center flex-col">
-                <input
-                    type="text"
-                    placeholder="Name"
-
-                    className="w-[80%] p-2 bg-transparent  border-b border-gray-400 focus:rounded-lg focus:outline-none  focus:ring-2 focus:ring-gray-400 focus:border-none text-white  placeholder:text-xl mt-5"
-                    onChange={(e) => {
-                        setName(e.target.value);
-                    }}
-                />
-                <input
-                    type="email"
-                    placeholder="Email"
-                    className="w-[80%] p-2 bg-transparent  border-b border-gray-400 focus:rounded-lg focus:outline-none  focus:ring-gray-400 focus:ring-2 text-white focus:border-none  placeholder:text-xl mt-2"
-                    onChange={(e) => {
-                        setEmail(e.target.value);
-                    }}
-                />
-                <input
-                    type="password"
-                    placeholder="Password"
-                    className="w-[80%] p-2 bg-transparent  border-b border-gray-400 focus:rounded-lg focus:outline-none  focus:ring-2 focus:ring-gray-400 focus:border-none text-white  placeholder:text-xl mt-2"
-                    onChange={(e) => {
-                        setPassword(e.target.value);
-                    }}
-                />
-            </div>
-
-            <button className="uppercase  transition-transform duration-700 ease-in-out  hover:scale-110 hover:bg-[#9f64e2] py-2 px-10 rounded-full tracking-widest hover:text-black font-semibold
-            text-gray-300 border-2 border-[#9f64e2] mt-5  text-xs " onClick={handleSignUp}>
-                Sign Up
-            </button>
-        </div>
-    );
-};
 
 export const ForSignupContent = () => {
     return (

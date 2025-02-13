@@ -18,14 +18,12 @@ const Verification = () => {
     const fetchuser = JSON.parse(localStorage.getItem("user"));
     const [email, setEmail] = useState(location.state?.email || fetchuser?.email || "");
 
-
-
-
     const handleOtpVerification = async (e) => {
         e.preventDefault();
         setLoading(true);
         if (!otp) {
             alert("Please enter the OTP.");
+            setLoading(false)
             return;
         }
 
@@ -33,10 +31,10 @@ const Verification = () => {
             const fetchuser = JSON.parse(localStorage.getItem("user"));
             if (!fetchuser || !fetchuser.userId) {
                 toast.warn("Bad Request in your side");
+                setLoading(false);
                 return;
             }
 
-            console.log("User ID:", fetchuser.userId);
 
             const userPayload = {
                 userId: fetchuser.userId,
@@ -48,20 +46,31 @@ const Verification = () => {
             if (res.status === 200) {
                 console.log("OTP verification successful:", res.data);
                 toast.success(res.data);
+                setLoading(false)
                 navigate("/home");
             } else {
+                setLoading(false)
                 toast.error("OTP verification failed.");
             }
         } catch (error) {
             console.error("Error verifying OTP:", error);
+            setLoading(false)
+
+
             if (error.response) {
                 // Log detailed error response from the backend
                 console.error("Backend response error:", error.response.data);
                 toast.error(error.response.data || "OTP verification failed.");
+                setLoading(false)
+
             } else {
                 toast.error("Error verifying OTP. Please try again later.");
+                setLoading(false)
+
             }
         }
+        setLoading(false)
+
     };
 
 
@@ -111,10 +120,7 @@ const Verification = () => {
                 <h6 className="font-serif mt-5 font-bold text-sm tracking-widest uppercase text-gray-300" style={{ fontFamily: "Montserrat" }}>Enter Confirmation Code</h6>
                 <div className="font-serif mt-5 font-bold text-sm tracking-wider text-gray-400 flex justify-center text-center" style={{ fontFamily: "Montserrat" }}>
                     <h5 >Enter Confirmation Code we sent to {email}  <span className={`text-blue-600 text-sm cursor-pointer ${edit ? "hidden" : ""} `} onClick={() => { setEdit(true) }}>edit </span>
-
                     </h5>
-
-
                 </div>
                 <div className="flex flex-col">
                     <input
@@ -130,7 +136,7 @@ const Verification = () => {
                         className="p-3 bg-transparent rounded-lg focus:outline-none ring-2 ring-gray-400 focus:border-none text-white placeholder:text-lg mt-5"
                     />
                     <div className="cursor-pointer flex justify-center items-center "  >
-                        <div className={`py-2 px-5 rounded-full hover:text-black font-semibold text-xs uppercase tracking-widest text-gray-300 border-2 border-blue-600 mt-5 ${isDisabled==false?"transition-transform duration-700 ease-in-out hover:scale-110  hover:bg-blue-600 ":""} ${isDisabled?"hover:text-red-500":""}`}>
+                        <div className={`py-2 px-5 rounded-full hover:text-black font-semibold text-xs uppercase tracking-widest text-gray-300 border-2 border-blue-600 mt-5 ${isDisabled == false ? "transition-transform duration-700 ease-in-out hover:scale-110  hover:bg-blue-600 " : ""} ${isDisabled ? "hover:text-red-500" : ""}`}>
                             {
                                 generateOtp ?
                                     <button className="uppercase" disabled={isDisabled} onClick={resendOtp}>Gnerate Otp</button>
@@ -146,11 +152,11 @@ const Verification = () => {
                         <ToastContainer theme="dark" />
                     </div>
                     <button
-                        className="transition-transform duration-700 ease-in-out hover:scale-110 uppercase hover:bg-blue-600 py-4 px-10 rounded-full hover:text-black font-semibold text-xs tracking-widest text-gray-300 border-2 border-blue-600 mt-5"
+                        className="transition-transform duration-700 ease-in-out hover:scale-110 uppercase hover:bg-blue-600 py-4 px-10 rounded-full hover:text-black font-semibold text-xs tracking-widest text-gray-300 border-2 border-blue-600 mt-5 items-center justify-center"
                         onClick={handleOtpVerification}
                         disabled={loading}  // Disable button during loading
                     >
-                        {loading ? "Verifying..." : "Verify"}
+                        {loading ?<div className={`h-5 w-5 mx-auto animate-spin border-t-2 rounded-full border-blue-900 border-x-4 hover:border-black`}></div>: "Verify"}
                     </button>
                 </div>
             </div>
