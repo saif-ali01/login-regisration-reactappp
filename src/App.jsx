@@ -20,7 +20,7 @@ const App = () => {
           element={<Login /> }
         />
         <Route path="/verification" element={<ProtectedRoutes Component={Verification}/>} />
-        <Route path="/forgetpassword" element={<ProtectedRoutes Component={ForgetPassword}/>} />
+        <Route path="/forgetpassword" element={<ForgetPassword/>} />
       </Routes>
     </Router>
   )
