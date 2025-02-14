@@ -30,7 +30,7 @@ const Verification = () => {
         try {
             const fetchuser = JSON.parse(localStorage.getItem("user"));
             if (!fetchuser || !fetchuser.userId) {
-                toast.warn("Bad Request in your side");
+                toast.warn("Bad Request ");
                 setLoading(false);
                 return;
             }
