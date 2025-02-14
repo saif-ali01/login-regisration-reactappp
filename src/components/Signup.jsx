@@ -68,7 +68,6 @@ const Signup = () => {
         }
         finally{
             setLoading(false)
-
         }
     };
 
@@ -115,7 +114,7 @@ const Signup = () => {
                 className="transition-transform duration-700 ease-in-out  hover:scale-110 uppercase hover:bg-[#9f64e2] py-2 px-10 rounded-full  hover:text-black font-semibold text-xs tracking-widest
                 text-gray-300 border-2 border-[#9f64e2] mt-5 " onClick={handleSignUp}>
                   {loading ? (
-                                        <div className="h-5 w-5 mx-auto animate-spin border-t-2 rounded-full border-[#9f64e2] border-x-4"></div>
+                                        <div className="h-5 w-5 mx-auto animate-spin border-t-2 rounded-full border-[#2b2a6d] border-x-4"></div>
                                     ) : (
                                         "Sign in"
                                     )}
