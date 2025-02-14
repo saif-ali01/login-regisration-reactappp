@@ -132,7 +132,9 @@ const Signin = () => {
                     />
             </form>
             </div>
-            <a href="#forget" className="font-serif mt-10 text-sm tracking-wider uppercase text-gray-300" style={{ fontFamily: "Montserrat" }}>
+            <a onClick={()=>{
+                navigate("/forgetpassword")
+            }} className="font-serif mt-10 text-sm tracking-wider uppercase text-gray-300" style={{ fontFamily: "Montserrat" }}>
                 Forget your password ?
             </a>
             <button type="submit"
