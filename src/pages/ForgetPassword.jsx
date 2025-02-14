@@ -6,12 +6,13 @@ import { validateEmail, validatePasswordForget } from "../helper/PasswordForget"
 
 const ForgetPassword = () => {
 
-    const [userInLocalStorage, setUserInLocalStorage] = useState(false);
     const [showField, setShowFiled] = useState(false);
 
     const [otp, setOtp] = useState("");
     const [password, setPassword] = useState("");
     const [time, setTime] = useState(30);
+    const [showEmail, setShowEmail] = useState(true);
+
 
 
     const [loading, setLoading] = useState(false);
@@ -24,8 +25,8 @@ const ForgetPassword = () => {
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem("user"));
         if (user) {
-            setUserInLocalStorage(true);
             setEmail(user?.email);
+            setShowEmail(false)
         }
     }, [])
 
@@ -120,17 +121,17 @@ const ForgetPassword = () => {
             <div className="md:w-[70%] w-full h-screen sm:h-[80%] sm:border-[0.5px] sm:border-gray-500 rounded-[10px] text-[rgb(255,255,255)] overflow-hidden sm:bg-[rgba(255,255,255,0.1)] relative flex flex-col justify-center items-center">
 
                 <div className=" flex flex-col justify-center items-center">
-                    {
-                        userInLocalStorage ?
+                  
+                        
                             <div className="font-serif mt-5 font-bold text-sm tracking-wider text-gray-400 flex justify-center text-center" style={{ fontFamily: "Montserrat" }}>
-                                <h5 >Enter Confirmation Code we sent to {email}
+                                <h5 >{showEmail?"Enter your email here:":`Enter Confirmation Code we sent to ${email} `}<button className={`text-blue-600 text-sm cursor-pointer ${showEmail ? "hidden" : ""} `} onClick={() => {setShowEmail(true) }}>{showEmail?"": "edit"}</button>
                                 </h5>
                             </div>
-                            : <div className=" flex flex-col justify-center items-center">
-                                <div className="font-serif mt-5 font-bold text-sm tracking-wider text-gray-400 flex justify-center text-center" style={{ fontFamily: "Montserrat" }}>
-                                    <h5 >Enter your email for sending otp :
-                                    </h5>
-                                </div>
+                           
+                            {
+                                showEmail?
+                                <div className= {`${showEmail?"flex":"hidden"} flex-col justify-center items-center `}>
+                         
                                 <input
                                     type="email"
                                     placeholder="Enter Email for sending otp "
@@ -138,8 +139,11 @@ const ForgetPassword = () => {
                                     onChange={(e) => { setEmail(e.target.value); }}
                                     className="p-3 bg-transparent rounded-lg focus:outline-none ring-2 ring-gray-400 focus:border-none text-white placeholder:text-lg mt-5"
                                 />
-                            </div>
-                    }
+                            </div>:""
+                            }
+
+                            
+                    
                     <input
                         type="number"
                         placeholder="Confirmation Code"

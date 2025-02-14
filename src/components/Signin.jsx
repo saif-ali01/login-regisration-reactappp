@@ -9,6 +9,8 @@ import { validateSignInFields } from "../helper/SignInAuth";
 const Signin = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+
     const navigate = useNavigate();
 
     const handleSignin = async (e) => {
@@ -16,12 +18,16 @@ const Signin = () => {
         const validate = validateSignInFields({email,password});
         if(!validate) return;
 
+        if(loading)return;
+        setLoading(true);
+
         let response;
         try {
             response = await axios.post(`${api}/auth/login`, { email, password });
 
             if (response.status === 200) {
                 localStorage.setItem("user", JSON.stringify(response.data));
+                setLoading(false)
                 const user = JSON.parse(localStorage.getItem("user"))
                 console.log("Saved user to localStorage:", user);
                 if (user.isVerified) {
@@ -30,6 +36,7 @@ const Signin = () => {
             }
 
         } catch (error) {
+            setLoading(false)
             if (error.response) {
                 const { status, data } = error.response;
 
@@ -101,6 +108,10 @@ const Signin = () => {
                 });
             }
         }
+        finally{
+            setLoading(false)
+            
+        }
     };
 
 
@@ -110,7 +121,8 @@ const Signin = () => {
             <h1 className='text-white text-4xl font-bold font-serif' style={{ fontFamily: "Montserrat" }}>Sign in</h1>
             <IconList />
             <div className="mt-6 w-full max-w-xs flex justify-center items-center flex-col">
-                <form action="">
+                <form className="w-full max-w-xs flex justify-center items-center flex-col">
+            
 
                 <input
                     type="email"
@@ -140,7 +152,11 @@ const Signin = () => {
             <button type="submit"
                 className="transition-transform duration-700 ease-in-out  hover:scale-110 uppercase hover:bg-[#9f64e2] py-2 px-10 rounded-full  hover:text-black font-semibold text-xs tracking-widest
                 text-gray-300 border-2 border-[#9f64e2] mt-5 " onClick={handleSignin}>
-                Sign in
+                  {loading ? (
+                                        <div className="h-5 w-5 mx-auto animate-spin border-t-2 rounded-full border-blue-900 border-x-4"></div>
+                                    ) : (
+                                        "Sign in"
+                                    )}
             </button>
             <ToastContainer theme="dark" />
         </div>
