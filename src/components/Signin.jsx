@@ -1,7 +1,7 @@
 import axios from "axios";
 import IconList from "./IconList";
 import { api } from "../api";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import { validateSignInFields } from "../helper/SignInAuth";
@@ -31,7 +31,7 @@ const Signin = () => {
                 const user = JSON.parse(localStorage.getItem("user"))
                 console.log("Saved user to localStorage:", user);
                 if (user.isVerified) {
-                    navigate("/home")
+                    navigate("/")
                 }
             }
 
@@ -110,7 +110,7 @@ const Signin = () => {
         }
         finally{
             setLoading(false)
-            
+
         }
     };
 
@@ -121,7 +121,6 @@ const Signin = () => {
             <h1 className='text-white text-4xl font-bold font-serif' style={{ fontFamily: "Montserrat" }}>Sign in</h1>
             <IconList />
             <div className="mt-6 w-full max-w-xs flex justify-center items-center flex-col">
-                <form className="w-full max-w-xs flex justify-center items-center flex-col">
             
 
                 <input
@@ -142,18 +141,17 @@ const Signin = () => {
                     }}
                     className="w-[80%] p-3 bg-transparent  border-b border-gray-400 focus:rounded-lg focus:outline-none  focus:ring-2 focus:ring-gray-400 focus:border-none text-white  placeholder:text-xl mt-5"
                     />
-            </form>
             </div>
             <a onClick={()=>{
                 navigate("/forgetpassword")
-            }} className="font-serif mt-10 text-sm tracking-wider uppercase text-gray-300" style={{ fontFamily: "Montserrat" }}>
+            }} className="font-serif mt-10 text-sm tracking-wider cursor-pointer uppercase text-gray-300" style={{ fontFamily: "Montserrat" }}>
                 Forget your password ?
             </a>
             <button type="submit"
                 className="transition-transform duration-700 ease-in-out  hover:scale-110 uppercase hover:bg-[#9f64e2] py-2 px-10 rounded-full  hover:text-black font-semibold text-xs tracking-widest
                 text-gray-300 border-2 border-[#9f64e2] mt-5 " onClick={handleSignin}>
                   {loading ? (
-                                        <div className="h-5 w-5 mx-auto animate-spin border-t-2 rounded-full border-blue-900 border-x-4"></div>
+                                        <div className="h-5 w-5 mx-auto animate-spin border-t-2 rounded-full border-[#9f64e2] border-x-4"></div>
                                     ) : (
                                         "Sign in"
                                     )}

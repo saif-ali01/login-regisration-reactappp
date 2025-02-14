@@ -10,10 +10,12 @@ const Signup = () => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleSignUp = async (e) => {
         e.preventDefault();
+        if(loading)return;
         const validate = validateSignUpFields({ email, password, name });
         if (!validate) {
             // If validation fails, stop the execution
@@ -25,14 +27,17 @@ const Signup = () => {
             email: email,
             password: password
         };
+        setLoading(true);
         try {
             const response = await axios.post(`${api}/auth/register`, user);
             if (response.status === 201) {
                 localStorage.setItem("user", JSON.stringify(response.data));
                 console.log("Saved user to localStorage:", JSON.parse(localStorage.getItem("user")));
                 navigate("/verification");
+                setLoading(false)
             }
         } catch (error) {
+            setLoading(false)
             if (error.response) {
                 const { status, data } = error.response;
 
@@ -42,6 +47,7 @@ const Signup = () => {
                         break;
                     case 403:
                         alert(data || 'Please verify your email');
+                        setLoading(false)
                         navigate("/verification");
                         break;
                     case 409:
@@ -57,7 +63,12 @@ const Signup = () => {
             } else {
                 console.error('Error:', error);
                 alert('Network error. Please check your connection.');
+                setLoading(false)
             }
+        }
+        finally{
+            setLoading(false)
+
         }
     };
 
@@ -100,9 +111,14 @@ const Signup = () => {
                     />
             </div>
 
-            <button type="submit" className="uppercase  transition-transform duration-700 ease-in-out  hover:scale-110 hover:bg-[#9f64e2] py-2 px-10 rounded-full tracking-widest hover:text-black font-semibold
-            text-gray-300 border-2 border-[#9f64e2] mt-5  text-xs " >
-                Sign Up
+            <button type="submit"
+                className="transition-transform duration-700 ease-in-out  hover:scale-110 uppercase hover:bg-[#9f64e2] py-2 px-10 rounded-full  hover:text-black font-semibold text-xs tracking-widest
+                text-gray-300 border-2 border-[#9f64e2] mt-5 " onClick={handleSignUp}>
+                  {loading ? (
+                                        <div className="h-5 w-5 mx-auto animate-spin border-t-2 rounded-full border-[#9f64e2] border-x-4"></div>
+                                    ) : (
+                                        "Sign in"
+                                    )}
             </button>
                 </form>
             <ToastContainer theme="dark" />
