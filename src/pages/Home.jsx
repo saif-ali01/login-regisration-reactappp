@@ -4,12 +4,12 @@ import { useNavigate } from "react-router-dom";
 const Home = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState({});
-  const [loading, setLoading] = useState(true); // Loading state
+  const [loading, setLoading] = useState(true); 
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("user"));
     if (!userData) {
-      navigate("/login"); // Redirect if no user is found
+      navigate("/login")
     } else {
       setUser(userData);
     }
@@ -21,7 +21,7 @@ const Home = () => {
   };
 
   const handleImageLoad = () => {
-    setLoading(false); // Set loading to false once the image is loaded
+    setLoading(false); 
   };
 
   return (
@@ -34,10 +34,8 @@ const Home = () => {
       }}
     >
       {loading ? (
-        <div className="loading-spinner">
-          <div className="w-screen h-screen justify-center items-center">
-          <div className="h-10 w-10 mx-auto my-auto animate-spin border-t-2 rounded-full border-[#6247c5] border-x-4"></div>
-          </div>
+        <div className=" w-screen h-screen flex justify-center items-center ">
+          <div className="h-10 w-10  animate-spin border-t-2 rounded-full border-[#6247c5] border-x-4"></div>
         </div> 
       ) : (
         <div
@@ -45,20 +43,20 @@ const Home = () => {
           style={{ fontFamily: "Montserrat" }}
         >
           <h5
-            className={`text-[#d86834] font-bold text-[40px]`}
+            className={ `uppercase bg-yellow-500 rounded-lg text-white px-2 font-bold text-[40px]`}
             style={{ fontFamily: "Zen Dots", fontWeight: 900 }}
           >
             hey! {user?.name}
           </h5>
 
           <h5
-            className={`text-[#cec32d] font-bold mt-[20px] text-[30px]`}
+            className={` font-bold mt-[20px] text-[30px]`}
             style={{ fontFamily: "Zen Dots", fontWeight: 900 }}
           >
             You Successfully Logged into our System
           </h5>
           <button
-            className="w-40 py-5 transition-transform duration-700 ease-in-out hover:scale-110 uppercase bg-[#d4a72a] rounded-full text-black font-semibold text-xs tracking-widest mt-5 items-center justify-center"
+            className="transition-transform duration-700 ease-in-out hover:scale-110 uppercase bg-blue-600 py-4 px-10 rounded-full text-black font-semibold text-xs tracking-widest  hover:border-blue-600 mt-5 items-center justify-center"
             onClick={logout}
           >
             Logout

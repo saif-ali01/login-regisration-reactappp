@@ -14,6 +14,7 @@ const ForgetPassword = () => {
     const [password, setPassword] = useState("");
     const [time, setTime] = useState(30);
     const [showEmail, setShowEmail] = useState(true);
+    const [user, setUser] = useState({});
 
 
 
@@ -21,16 +22,19 @@ const ForgetPassword = () => {
     const [isDisabled, setIsDisabled] = useState(false);
     const [generateOtp, setGenerateOtp] = useState(true);
     const [resend, setResend] = useState(false);
-    const [email, setEmail] = useState(location.state?.email || "");
+    const [email, setEmail] = useState("");
 
 
+
+ 
     useEffect(() => {
-        const user = JSON.parse(localStorage.getItem("user"));
-        if (user) {
-            setEmail(user?.email);
-            setShowEmail(false)
+        const fetchedUser = JSON.parse(localStorage.getItem("user"));
+        if (fetchedUser) {
+            setUser(fetchedUser);
+            setEmail(fetchedUser.email);
+            setShowEmail(false);
         }
-    }, [])
+    }, []);
 
     const resendOtp = async () => {
         const validate = validateEmail(email);
@@ -50,20 +54,20 @@ const ForgetPassword = () => {
                 setGenerateOtp(false);
                 setLoading(false)
                 setShowFiled(true);
-                // Start the countdown
-                setIsDisabled(true); // Disable the button
-                setTime(30); // Reset countdown timer to 30 seconds
+             
+                setIsDisabled(true);
+                setTime(30); 
 
                 const countdown = setInterval(() => {
                     setTime((prevTime) => {
                         if (prevTime <= 1) {
-                            clearInterval(countdown); // Stop the countdown
-                            setIsDisabled(false); // Re-enable the button
+                            clearInterval(countdown); 
+                            setIsDisabled(false); 
                             setLoading(false)
 
                             return 0;
                         }
-                        return prevTime - 1; // Decrement the timer
+                        return prevTime - 1; 
                     });
                 }, 1000);
             }
@@ -71,7 +75,7 @@ const ForgetPassword = () => {
             toast.error("Error sending OTP.");
             console.error(error);
         } finally {
-            setResend(false); // Re-enable the resend button
+            setResend(false); 
             setLoading(false)
 
         }
@@ -87,14 +91,11 @@ const ForgetPassword = () => {
         }
         setLoading(true);
         try {
-            const fetchuser = JSON.parse(localStorage.getItem("user"));
-            const userId = fetchuser.userId
-            if (!fetchuser || !fetchuser.userId) {
-                toast.warn("Bad Request ");
-                return;
-            }
+                     
+             const reqEmail = user?.email || email; 
+         console.log(reqEmail)
             const userPayload = {
-                userId: userId,
+                email: reqEmail,
                 otp: otp,
                 password: password
             };
@@ -196,9 +197,12 @@ const ForgetPassword = () => {
                                 </div> : ""
                         }
                     </div> :
-                    <div className="">
+                    <div className=" flex flex-col justify-center items-center ">
+                        <div className="font-serif mt-5 font-bold text-sm tracking-wider text-gray-400 flex justify-center text-center" style={{ fontFamily: "Montserrat" }}>
+                            <h5 >PassWord Successfully Change.</h5>
+                        </div>
                         <button
-                            className="w-40 py-5 transition-transform duration-700 ease-in-out hover:scale-110 uppercase bg-[#d4a72a] rounded-full text-black font-semibold text-xs tracking-widest  mt-5 items-center justify-center"
+                            className="transition-transform duration-700 ease-in-out hover:scale-110 uppercase hover:bg-blue-600 py-4 px-10 rounded-full hover:text-black font-semibold text-xs tracking-widest text-gray-300 border-2 border-blue-600 mt-5 items-center justify-center"
                             onClick={gotoSignin}
                         >
                             Sign in
