@@ -36,7 +36,7 @@ const Home = () => {
       {loading ? (
         <div className="loading-spinner">
           <div className="w-screen h-screen justify-center items-center">
-          <div className="h-5 w-5 mx-auto animate-spin border-t-2 rounded-full border-[#6247c5] border-x-4"></div>
+          <div className="h-10 w-10 mx-auto my-auto animate-spin border-t-2 rounded-full border-[#6247c5] border-x-4"></div>
           </div>
         </div> 
       ) : (
